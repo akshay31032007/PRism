@@ -1,0 +1,71 @@
+.env.example
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment
+.env
+.env.local
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Type checking
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local databases
+*.db
+*.sqlite3
+
+# Vector stores
+qdrant_storage/
+chroma/
+faiss_index/
+
+# Node
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# ML
+ml/models/*.pt
+ml/models/*.pth
+ml/models/*.onnx
+
+# GitHub secrets
+*.pem
+*.key
+*.crt
+
+# Temporary
+tmp/
+temp/
+.cache/
