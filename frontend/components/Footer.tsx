@@ -3,108 +3,123 @@ import Link from "next/link";
 import { Cpu, Github, Twitter, Linkedin, Shield } from "lucide-react";
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-zinc-900 bg-zinc-950 py-12 px-6 relative z-10">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
-        
-        {/* BRAND COLUMN */}
-        <div className="flex flex-col gap-4">
-          <Link href="/" className="flex items-center gap-2 group focus-visible:outline-none">
-            <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center">
-              <Cpu className="w-4 h-4 text-zinc-400 group-hover:text-zinc-100 transition-colors" />
+    <footer className="relative z-10 border-t border-border bg-background">
+
+      {/* Top neon accent line */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-accent/40 to-transparent shadow-neon-sm" />
+
+      <div className="max-w-7xl mx-auto px-6 pt-12 pb-8 grid grid-cols-1 md:grid-cols-4 gap-10">
+
+        {/* ── Brand column ── */}
+        <div className="flex flex-col gap-5">
+          <Link href="/" className="group flex items-center gap-2.5 focus-visible:outline-none w-fit">
+            <div className="w-8 h-8 cyber-chamfer-sm border border-border bg-card flex items-center justify-center group-hover:border-accent group-hover:shadow-neon-sm transition-all duration-150">
+              <Cpu className="w-3.5 h-3.5 text-muted-foreground group-hover:text-accent transition-colors duration-150" strokeWidth={1.5} />
             </div>
-            <span className="font-outfit text-lg font-bold tracking-wider text-zinc-200">
-              PRism<span className="text-zinc-500">.ai</span>
+            <span className="font-orbitron text-sm font-bold tracking-widest text-foreground">
+              PR<span className="text-accent">ism</span>
+              <span className="text-muted-foreground font-mono text-xs">.ai</span>
             </span>
           </Link>
-          <p className="text-xs text-zinc-500 max-w-xs leading-relaxed">
-            Multi-agent orchestrator for automated code analysis, architectural conformity, and repository triage.
+
+          <p className="font-mono text-[11px] text-muted-foreground leading-relaxed max-w-[220px]">
+            // Multi-agent orchestrator for automated code analysis, architectural conformity, and repo triage.
           </p>
-        </div>
 
-        {/* NAVIGATION COLUMN */}
-        <div>
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-4">Platform</h4>
-          <ul className="flex flex-col gap-2.5 text-xs text-zinc-500 font-medium">
-            <li>
-              <Link href="/repos" className="hover:text-zinc-350 transition-colors">
-                Repository Analyzer
-              </Link>
-            </li>
-            <li>
-              <Link href="/history" className="hover:text-zinc-350 transition-colors">
-                Analysis History
-              </Link>
-            </li>
-            <li>
-              <Link href="/#about" className="hover:text-zinc-350 transition-colors">
-                About Us
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        {/* LEGAL COLUMN */}
-        <div>
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-4">Legal</h4>
-          <ul className="flex flex-col gap-2.5 text-xs text-zinc-500 font-medium">
-            <li>
-              <a href="#" className="hover:text-zinc-350 transition-colors">Terms of Service</a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-zinc-350 transition-colors">Privacy Policy</a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-zinc-350 transition-colors">Security Standards</a>
-            </li>
-          </ul>
-        </div>
-
-        {/* SOCIALS COLUMN */}
-        <div>
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-4">Community</h4>
-          <div className="flex items-center gap-3">
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noreferrer"
-              className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-150 hover:bg-zinc-850 hover:border-zinc-700 transition-colors"
-              aria-label="GitHub Profile"
-            >
-              <Github className="w-4 h-4" />
-            </a>
-            <a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noreferrer"
-              className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-150 hover:bg-zinc-850 hover:border-zinc-700 transition-colors"
-              aria-label="Twitter Profile"
-            >
-              <Twitter className="w-4 h-4" />
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noreferrer"
-              className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-150 hover:bg-zinc-850 hover:border-zinc-700 transition-colors"
-              aria-label="LinkedIn Profile"
-            >
-              <Linkedin className="w-4 h-4" />
-            </a>
+          {/* Status indicator */}
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent animate-neon-pulse" />
+            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              Systems Nominal
+            </span>
           </div>
         </div>
 
+        {/* ── Platform links ── */}
+        <div>
+          <h4 className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent mb-5">
+            // Platform
+          </h4>
+          <ul className="flex flex-col gap-3">
+            {[
+              { label: "Repository Analyzer", href: "/repos" },
+              { label: "Analysis History",    href: "/history" },
+              { label: "About Us",            href: "/#about" },
+            ].map((item) => (
+              <li key={item.label}>
+                <Link
+                  href={item.href}
+                  className="font-mono text-xs text-muted-foreground hover:text-accent transition-colors duration-150 group flex items-center gap-1.5"
+                >
+                  <span className="opacity-0 group-hover:opacity-100 text-accent transition-opacity">›</span>
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* ── Legal links ── */}
+        <div>
+          <h4 className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent mb-5">
+            // Legal
+          </h4>
+          <ul className="flex flex-col gap-3">
+            {[
+              "Terms of Service",
+              "Privacy Policy",
+              "Security Standards",
+            ].map((label) => (
+              <li key={label}>
+                <a
+                  href="#"
+                  className="font-mono text-xs text-muted-foreground hover:text-accent transition-colors duration-150 group flex items-center gap-1.5"
+                >
+                  <span className="opacity-0 group-hover:opacity-100 text-accent transition-opacity">›</span>
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* ── Community / socials ── */}
+        <div>
+          <h4 className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent mb-5">
+            // Community
+          </h4>
+          <div className="flex items-center gap-2.5">
+            {[
+              { Icon: Github,   href: "https://github.com",   label: "GitHub" },
+              { Icon: Twitter,  href: "https://twitter.com",  label: "Twitter" },
+              { Icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
+            ].map(({ Icon, href, label }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={label}
+                className="w-8 h-8 cyber-chamfer-sm border border-border bg-card flex items-center justify-center text-muted-foreground hover:border-accent hover:text-accent hover:shadow-neon-sm transition-all duration-150"
+              >
+                <Icon className="w-3.5 h-3.5" strokeWidth={1.5} />
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-zinc-900 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] text-zinc-650 tracking-wider">
-        <div>
-          &copy; {currentYear} PRism AI. All rights reserved.
-        </div>
-        <div className="flex items-center gap-1.5 text-zinc-700">
-          <Shield className="w-3.5 h-3.5" />
-          <span>AES-256 Mock Encrypted Transmission</span>
+      {/* ── Bottom bar ── */}
+      <div className="max-w-7xl mx-auto px-6 pb-8 border-t border-border/50 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <span className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">
+          &copy; {year} PRism AI — All rights reserved
+        </span>
+        <div className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/50 tracking-widest uppercase">
+          <Shield className="w-3 h-3" strokeWidth={1.5} />
+          <span>AES-256 Encrypted Transmission</span>
         </div>
       </div>
     </footer>

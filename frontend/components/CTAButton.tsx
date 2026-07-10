@@ -7,7 +7,8 @@ import { ArrowRight } from "lucide-react";
 interface CTAButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  variant?: "primary" | "secondary";
+  /** primary = neon green border/fill | secondary = magenta | glitch = solid neon | ghost = no border */
+  variant?: "primary" | "secondary" | "glitch" | "ghost" | "outline";
   showArrow?: boolean;
   type?: "button" | "submit" | "reset";
   className?: string;
@@ -23,14 +24,42 @@ export default function CTAButton({
   className = "",
   disabled = false,
 }: CTAButtonProps) {
-  const baseStyle =
-    "px-6 py-3 rounded-lg text-sm font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all select-none focus-visible:outline-none";
+  const base =
+    "relative inline-flex items-center justify-center gap-2 px-6 py-3 " +
+    "font-mono text-xs font-semibold uppercase tracking-[0.18em] " +
+    "transition-all duration-150 select-none focus-visible:outline-none " +
+    "disabled:opacity-40 disabled:cursor-not-allowed " +
+    "focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
-  const variants = {
+  const variantStyles: Record<string, string> = {
+    /** Default — transparent, neon green border, fills on hover */
     primary:
-      "bg-zinc-100 text-zinc-950 hover:bg-zinc-200 border border-transparent shadow-md shadow-white/5 disabled:bg-zinc-800 disabled:text-zinc-650",
+      "cyber-chamfer-sm border-2 border-accent text-accent " +
+      "hover:bg-accent hover:text-background hover:shadow-neon " +
+      "active:brightness-90",
+
+    /** Secondary — magenta border, fills on hover */
     secondary:
-      "bg-zinc-950/60 border border-zinc-800 text-zinc-350 hover:text-zinc-100 hover:border-zinc-550 shadow-sm shadow-black/30 disabled:border-zinc-900 disabled:text-zinc-700",
+      "cyber-chamfer-sm border-2 border-accent-secondary text-accent-secondary " +
+      "hover:bg-accent-secondary hover:text-background hover:shadow-neon-secondary " +
+      "active:brightness-90",
+
+    /** Glitch — solid neon fill, chromatic aberration animation */
+    glitch:
+      "cyber-chamfer-sm bg-accent text-background border-2 border-accent " +
+      "hover:brightness-110 hover:shadow-neon-lg " +
+      "active:brightness-90",
+
+    /** Outline — dim border, reveals neon on hover */
+    outline:
+      "cyber-chamfer-sm border border-border text-muted-foreground " +
+      "hover:border-accent hover:text-accent hover:shadow-neon-sm " +
+      "active:brightness-90",
+
+    /** Ghost — no border, subtle fill on hover */
+    ghost:
+      "text-muted-foreground hover:text-accent hover:bg-accent/10 " +
+      "active:brightness-90",
   };
 
   return (
@@ -39,11 +68,25 @@ export default function CTAButton({
       onClick={onClick}
       disabled={disabled}
       whileHover={disabled ? {} : { scale: 1.02 }}
-      whileTap={disabled ? {} : { scale: 0.98 }}
-      className={`${baseStyle} ${variants[variant]} ${className}`}
+      whileTap={disabled ? {} : { scale: 0.97 }}
+      className={`${base} ${variantStyles[variant]} ${className}`}
     >
-      <span>{children}</span>
-      {showArrow && <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />}
+      {/* Glitch variant gets chromatic aberration overlay */}
+      {variant === "glitch" && (
+        <span
+          className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 hover:opacity-100 transition-opacity"
+          aria-hidden="true"
+          style={{ textShadow: "-1px 0 #ff00ff, 1px 0 #00d4ff" }}
+        />
+      )}
+
+      <span className="relative z-10">{children}</span>
+      {showArrow && (
+        <ArrowRight
+          className="relative z-10 w-3.5 h-3.5 transition-transform group-hover:translate-x-1"
+          strokeWidth={1.5}
+        />
+      )}
     </motion.button>
   );
 }

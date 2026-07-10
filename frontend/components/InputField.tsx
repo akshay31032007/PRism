@@ -7,6 +7,8 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: LucideIcon;
   error?: string;
   containerClassName?: string;
+  /** Show terminal ">" prefix (default: true) */
+  terminalPrefix?: boolean;
 }
 
 export default function InputField({
@@ -15,29 +17,59 @@ export default function InputField({
   containerClassName = "",
   className = "",
   id,
+  terminalPrefix = true,
   ...props
 }: InputFieldProps) {
   return (
     <div className={`flex flex-col gap-1.5 w-full ${containerClassName}`}>
       <div className="relative flex items-center">
+
+        {/* Terminal ">" prompt prefix */}
+        {terminalPrefix && (
+          <span
+            className="absolute left-3 font-mono text-accent text-sm font-bold pointer-events-none select-none z-10"
+            aria-hidden="true"
+          >
+            &gt;
+          </span>
+        )}
+
+        {/* Optional icon — placed after the ">" */}
         {Icon && (
-          <div className="absolute left-4 text-zinc-500 pointer-events-none">
-            <Icon className="w-5 h-5" />
+          <div className={`absolute pointer-events-none text-muted-foreground ${terminalPrefix ? "left-10" : "left-4"}`}>
+            <Icon className="w-4 h-4" strokeWidth={1.5} />
           </div>
         )}
+
         <input
           id={id}
-          className={`w-full bg-zinc-900/60 border border-zinc-800 rounded-xl py-3.5 pr-4 text-sm text-zinc-150 placeholder:text-zinc-550 transition-all focus:border-zinc-600 focus:bg-zinc-900/90 focus:ring-1 focus:ring-zinc-650 ${
-            Icon ? "pl-12" : "pl-4"
-          } ${
-            error ? "border-red-900/60 focus:border-red-500 focus:ring-red-500" : ""
-          } ${className}`}
+          aria-describedby={error ? `${id}-error` : undefined}
+          aria-invalid={!!error}
+          className={[
+            "w-full bg-input border border-border cyber-chamfer-sm",
+            "font-mono text-sm text-accent placeholder:text-muted-foreground/50",
+            "py-3 pr-4 transition-all duration-150 outline-none",
+            "focus:border-accent focus:shadow-neon-sm",
+            error ? "border-destructive focus:border-destructive focus:shadow-neon-destructive" : "",
+            terminalPrefix && Icon  ? "pl-16" : "",
+            terminalPrefix && !Icon ? "pl-8"  : "",
+            !terminalPrefix && Icon ? "pl-11" : "",
+            !terminalPrefix && !Icon ? "pl-4" : "",
+            className,
+          ]
+            .filter(Boolean)
+            .join(" ")}
           {...props}
         />
       </div>
+
       {error && (
-        <span className="text-xs text-red-500 font-medium px-1" id={`${id}-error`}>
-          {error}
+        <span
+          id={`${id}-error`}
+          className="font-mono text-xs text-destructive tracking-wide px-1"
+          role="alert"
+        >
+          // ERROR: {error}
         </span>
       )}
     </div>
