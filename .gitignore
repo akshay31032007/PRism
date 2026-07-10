@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .env.example
 # Python
 __pycache__/
@@ -69,3 +70,9 @@ ml/models/*.onnx
 tmp/
 temp/
 .cache/
+=======
+node_modules/
+frontend/node_modules/
+.next/
+.env
+>>>>>>> e100f537b27e7bca54a736c809e29634022d3aa6
