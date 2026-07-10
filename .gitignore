@@ -1,82 +1,74 @@
-<<<<<<< HEAD
-.env.example
-# Python
+# ── Python ────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 
-# Virtual environments
+# ── Virtual environments ───────────────────────────────────────────────────────
 .venv/
 venv/
 env/
 
-# Environment
+# ── Environment / Secrets — NEVER commit these ────────────────────────────────
 .env
 .env.local
+.env.*.local
+**/.env
+**/.env.local
+backend/.env
+frontend/.env.local
 
-# Build
+# ── Build ─────────────────────────────────────────────────────────────────────
 build/
 dist/
 *.egg-info/
 
-# Testing
+# ── Testing ───────────────────────────────────────────────────────────────────
 .pytest_cache/
 .coverage
 htmlcov/
 
-# Type checking
+# ── Type checking ─────────────────────────────────────────────────────────────
 .mypy_cache/
-
-# Ruff
 .ruff_cache/
 
-# IDE
+# ── IDE ───────────────────────────────────────────────────────────────────────
 .vscode/
 .idea/
 
-# OS
+# ── OS ────────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 
-# Logs
+# ── Logs ──────────────────────────────────────────────────────────────────────
 *.log
 
-# Local databases
+# ── Local databases ───────────────────────────────────────────────────────────
 *.db
 *.sqlite3
 
-# Vector stores
+# ── Vector stores ─────────────────────────────────────────────────────────────
 qdrant_storage/
 chroma/
 faiss_index/
 
-# Node
+# ── Node ──────────────────────────────────────────────────────────────────────
+node_modules/
 frontend/node_modules/
 frontend/.next/
 frontend/out/
 
-# ML
+# ── ML models ─────────────────────────────────────────────────────────────────
 ml/models/*.pt
 ml/models/*.pth
 ml/models/*.onnx
 
-# GitHub secrets
+# ── Secrets / Keys ────────────────────────────────────────────────────────────
 *.pem
 *.key
 *.crt
 
-# Temporary
+# ── Temporary ─────────────────────────────────────────────────────────────────
 tmp/
 temp/
 .cache/
-=======
-node_modules/
-frontend/node_modules/
-.next/
-.env
->>>>>>> e100f537b27e7bca54a736c809e29634022d3aa6
-
-*.env
-.env
-**/.env
