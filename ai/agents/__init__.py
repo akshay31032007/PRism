@@ -1,21 +1,17 @@
-"""PRism AI Agents — all agent classes in one import."""
-
-from .security_agent          import SecurityAgent
-from .code_quality_agent      import CodeQualityAgent
-from .architecture_agent      import ArchitectureAgent
-from .documentation_agent     import DocumentationAgent
-from .testing_agent           import TestingAgent
-from .performance_agent       import PerformanceAgent
-from .repository_context_agent import DependencyAgent
-from .merge_recommendation_agent import MergeRecommendationAgent
+from ai.agents.architecture import ArchitectureAgent
+from ai.agents.code_quality import CodeQualityAgent
+from ai.agents.dependency import DependencyAgent
+from ai.agents.documentation import DocumentationAgent
+from ai.agents.repo_qa import RepositoryQAAgent
+from ai.agents.security import SecurityAgent
+from ai.agents.test_coverage import TestCoverageAgent
 
 __all__ = [
     "SecurityAgent",
     "CodeQualityAgent",
     "ArchitectureAgent",
     "DocumentationAgent",
-    "TestingAgent",
-    "PerformanceAgent",
+    "TestCoverageAgent",
     "DependencyAgent",
-    "MergeRecommendationAgent",
+    "RepositoryQAAgent",
 ]

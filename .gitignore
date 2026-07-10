@@ -1,74 +1,74 @@
-# ── Python ────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 
-# ── Virtual environments ───────────────────────────────────────────────────────
+# Virtual environments
 .venv/
 venv/
 env/
 
-# ── Environment / Secrets — NEVER commit these ────────────────────────────────
+# Environment
 .env
 .env.local
-.env.*.local
-**/.env
-**/.env.local
-backend/.env
-frontend/.env.local
 
-# ── Build ─────────────────────────────────────────────────────────────────────
+# Build
 build/
 dist/
 *.egg-info/
 
-# ── Testing ───────────────────────────────────────────────────────────────────
+# Testing
 .pytest_cache/
 .coverage
 htmlcov/
 
-# ── Type checking ─────────────────────────────────────────────────────────────
+# Type checking
 .mypy_cache/
+
+# Ruff
 .ruff_cache/
 
-# ── IDE ───────────────────────────────────────────────────────────────────────
+# IDE
 .vscode/
 .idea/
 
-# ── OS ────────────────────────────────────────────────────────────────────────
+# OS
 .DS_Store
 Thumbs.db
 
-# ── Logs ──────────────────────────────────────────────────────────────────────
+# Logs
 *.log
 
-# ── Local databases ───────────────────────────────────────────────────────────
+# Local databases
 *.db
 *.sqlite3
 
-# ── Vector stores ─────────────────────────────────────────────────────────────
+# Vector stores
 qdrant_storage/
 chroma/
 faiss_index/
 
-# ── Node ──────────────────────────────────────────────────────────────────────
-node_modules/
+# Node
 frontend/node_modules/
 frontend/.next/
 frontend/out/
 
-# ── ML models ─────────────────────────────────────────────────────────────────
+# ML
 ml/models/*.pt
 ml/models/*.pth
 ml/models/*.onnx
 
-# ── Secrets / Keys ────────────────────────────────────────────────────────────
+# GitHub secrets
 *.pem
 *.key
 *.crt
 
-# ── Temporary ─────────────────────────────────────────────────────────────────
+# Temporary
 tmp/
 temp/
 .cache/
+node_modules/
+frontend/node_modules/
+.next/
+.env
+
