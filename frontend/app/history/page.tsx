@@ -28,12 +28,13 @@ export default function HistoryPage() {
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
   const [mounted, setMounted] = useState(false);
 
-  const refresh = () => setEntries(loadHistory());
+  const refresh = () => {
+    void loadHistory().then(setEntries);
+  };
 
   useEffect(() => {
     setMounted(true);
     refresh();
-    // Listen for new analyses saved from repos page
     window.addEventListener("prism_history_updated", refresh);
     return () => window.removeEventListener("prism_history_updated", refresh);
   }, []);
@@ -53,13 +54,13 @@ export default function HistoryPage() {
             Past Analyses
           </h1>
           <p className="font-mono text-xs text-muted-foreground mt-1">
-            {entries.length} record{entries.length !== 1 ? "s" : ""} stored locally
+            {entries.length} record{entries.length !== 1 ? "s" : ""} stored
           </p>
         </div>
 
         {entries.length > 0 && (
           <button
-            onClick={() => { clearHistory(); refresh(); }}
+            onClick={() => { void clearHistory().then(refresh); }}
             className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground hover:text-destructive transition-colors duration-150"
           >
             <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
