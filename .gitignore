@@ -72,9 +72,3 @@ frontend/node_modules/
 .next/
 .env
 
-
-.env
-*.env
-backend/.env
-frontend/.env.local
-
