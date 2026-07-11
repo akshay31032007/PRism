@@ -2,22 +2,23 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Cpu, Shield, Zap, AlertTriangle } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 import GitHubButton from "@/components/GitHubButton";
+import { createClient } from "@/utils/supabase/client";
 
 export default function SignUpPage() {
-  const params  = useSearchParams();
+  const params = useSearchParams();
   const [loading, setLoading] = useState(false);
 
   const errorCode = params.get("error");
   const errorMessages: Record<string, string> = {
-    OAuthSignin:   "Could not start GitHub sign-in. Try again.",
+    auth_callback_error: "Authentication callback failed. Try again.",
+    OAuthSignin: "Could not start GitHub sign-in. Try again.",
     OAuthCallback: "GitHub returned an error. Try again.",
-    AccessDenied:  "Access was denied. Authorise the app on GitHub.",
-    default:       "Authentication failed. Please try again.",
+    AccessDenied: "Access was denied. Authorise the app on GitHub.",
+    default: "Authentication failed. Please try again.",
   };
   const errorMsg = errorCode
     ? (errorMessages[errorCode] ?? errorMessages.default)
@@ -25,7 +26,17 @@ export default function SignUpPage() {
 
   const handleGitHub = async () => {
     setLoading(true);
-    await signIn("github", { callbackUrl: "/repos" });
+    const supabase = createClient();
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin;
+
+    await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent("/repos")}`,
+        scopes: "read:user user:email repo",
+      },
+    });
   };
 
   return (
@@ -50,7 +61,6 @@ export default function SignUpPage() {
       >
         <div className="border border-border cyber-chamfer bg-card overflow-hidden shadow-void">
 
-          {/* Terminal header */}
           <div className="flex items-center gap-2 px-5 h-8 bg-muted border-b border-border">
             <span className="w-2 h-2 rounded-full bg-destructive opacity-70" />
             <span className="w-2 h-2 rounded-full bg-yellow-500 opacity-70" />
@@ -62,7 +72,6 @@ export default function SignUpPage() {
 
           <div className="p-8">
 
-            {/* Logo + title */}
             <div className="flex flex-col items-center text-center mb-8 gap-4">
               <div className="w-14 h-14 cyber-chamfer border border-accent-secondary/30 bg-background flex items-center justify-center hover:border-accent-secondary hover:shadow-neon-secondary transition-all duration-150">
                 <Cpu className="w-6 h-6 text-accent-secondary/70" strokeWidth={1.5} />
@@ -80,7 +89,6 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            {/* Error banner */}
             {errorMsg && (
               <div className="mb-5 cyber-chamfer-sm border border-destructive/40 bg-destructive/10 px-4 py-3 flex items-start gap-2.5">
                 <AlertTriangle className="w-3.5 h-3.5 text-destructive shrink-0 mt-0.5" strokeWidth={1.5} />
@@ -90,7 +98,6 @@ export default function SignUpPage() {
               </div>
             )}
 
-            {/* Feature blurbs */}
             <div className="mb-6 grid grid-cols-1 gap-2">
               {[
                 { icon: Shield, text: "Automated security scanning on every PR" },
@@ -104,7 +111,6 @@ export default function SignUpPage() {
               ))}
             </div>
 
-            {/* GitHub button */}
             <div className="mb-6">
               <GitHubButton
                 onClick={handleGitHub}
@@ -130,7 +136,7 @@ export default function SignUpPage() {
           <div className="border-t border-border bg-muted/30 px-5 py-2.5 flex items-center gap-2">
             <Shield className="w-3 h-3 text-muted-foreground/40" strokeWidth={1.5} />
             <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/40">
-              Encrypted OAuth Handshake — GitHub
+              Encrypted OAuth Handshake — GitHub via Supabase
             </span>
           </div>
         </div>

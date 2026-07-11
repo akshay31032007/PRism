@@ -1,21 +1,27 @@
-import { withAuth } from "next-auth/middleware";
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { updateSession } from "@/utils/supabase/middleware";
 
-export default withAuth(
-  function middleware(req) {
-    // User is authenticated — let them through
-    return NextResponse.next();
-  },
-  {
-    callbacks: {
-      // authorized() decides who can access the matched routes
-      // returning false redirects to the signIn page
-      authorized: ({ token }) => !!token,
-    },
+const protectedPrefixes = ["/repos", "/history"];
+
+export async function middleware(request: NextRequest) {
+  const { supabaseResponse, user } = await updateSession(request);
+
+  const isProtected = protectedPrefixes.some((prefix) =>
+    request.nextUrl.pathname.startsWith(prefix)
+  );
+
+  if (isProtected && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/signin";
+    url.searchParams.set("redirect", request.nextUrl.pathname);
+    return NextResponse.redirect(url);
   }
-);
 
-// Protect these routes — any unauthenticated visit redirects to /signin
+  return supabaseResponse;
+}
+
 export const config = {
-  matcher: ["/repos/:path*", "/history/:path*"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

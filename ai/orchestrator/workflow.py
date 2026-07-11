@@ -186,9 +186,11 @@ async def rag_retrieval_node(state: GraphState) -> GraphState:
 
 async def parallel_agents_node(state: GraphState) -> GraphState:
     """
-    Runs all 7 specialist agents concurrently via asyncio.gather().
-    Gemini has a 1M TPM limit so all agents can fire at the same time.
+    Runs all 7 specialist agents concurrently.
+    Groq free tier has a low TPM cap — agents run one at a time with a short pause.
     """
+    from backend.config import LLMProvider, get_settings
+
     t0 = time.perf_counter()
 
     agents = [
@@ -201,8 +203,21 @@ async def parallel_agents_node(state: GraphState) -> GraphState:
         DependencyAgent(),
     ]
 
-    logger.info("parallel_agents: launching %d agents concurrently", len(agents))
-    results = await asyncio.gather(*[a.run(state) for a in agents])
+    settings = get_settings()
+    use_sequential = settings.default_llm_provider == LLMProvider.GROQ
+
+    if use_sequential:
+        logger.info(
+            "parallel_agents: running %d agents sequentially (Groq rate-limit safe mode)",
+            len(agents),
+        )
+        results: list = []
+        for agent in agents:
+            results.append(await agent.run(state))
+            await asyncio.sleep(3)
+    else:
+        logger.info("parallel_agents: launching %d agents concurrently", len(agents))
+        results = await asyncio.gather(*[a.run(state) for a in agents])
 
     (
         state.security_result,

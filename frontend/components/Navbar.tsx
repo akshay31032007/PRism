@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { useSupabase } from "@/components/SessionProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Cpu, LogOut, ChevronDown } from "lucide-react";
 
@@ -13,7 +13,7 @@ export default function Navbar() {
   const [scrolled,  setScrolled]  = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { data: session, status } = useSession();
+  const { user, loading, signOut } = useSupabase();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -86,21 +86,21 @@ export default function Navbar() {
 
         {/* ── Auth area ── */}
         <div className="hidden md:block">
-          {status === "loading" ? (
+          {loading ? (
             /* Skeleton while session loads */
             <div className="w-24 h-8 cyber-chamfer-sm bg-muted animate-pulse" />
 
-          ) : session?.user ? (
+          ) : user ? (
             /* ── Logged-in: avatar + dropdown ── */
             <div className="relative">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="flex items-center gap-2.5 cyber-chamfer-sm border border-border bg-card px-3 py-1.5 hover:border-accent hover:shadow-neon-sm transition-all duration-150 focus-visible:outline-none"
               >
-                {session.user.image ? (
+                {user.user_metadata?.avatar_url ? (
                   <Image
-                    src={session.user.image}
-                    alt={session.user.name ?? "User"}
+                    src={user.user_metadata.avatar_url}
+                    alt={user.user_metadata.full_name ?? user.email ?? "User"}
                     width={22}
                     height={22}
                     className="rounded-full"
@@ -108,12 +108,12 @@ export default function Navbar() {
                 ) : (
                   <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center">
                     <span className="font-mono text-[10px] text-accent">
-                      {session.user.name?.[0]?.toUpperCase() ?? "U"}
+                      {(user.user_metadata?.full_name ?? user.email)?.[0]?.toUpperCase() ?? "U"}
                     </span>
                   </div>
                 )}
                 <span className="font-mono text-xs text-foreground tracking-wide max-w-[120px] truncate">
-                  {session.user.name ?? session.user.email}
+                  {user.user_metadata?.full_name ?? user.user_metadata?.user_name ?? user.email}
                 </span>
                 <ChevronDown className="w-3 h-3 text-muted-foreground" strokeWidth={1.5} />
               </button>
@@ -133,7 +133,7 @@ export default function Navbar() {
                         // Authenticated
                       </p>
                       <p className="font-mono text-xs text-foreground mt-1 truncate">
-                        {session.user.email}
+                        {user.email}
                       </p>
                     </div>
 
@@ -141,7 +141,7 @@ export default function Navbar() {
                     <button
                       onClick={() => {
                         setUserMenuOpen(false);
-                        signOut({ callbackUrl: "/signin" });
+                        signOut();
                       }}
                       className="w-full flex items-center gap-2.5 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all duration-150"
                     >
@@ -207,9 +207,9 @@ export default function Navbar() {
               ))}
 
               <div className="pt-2">
-                {session?.user ? (
+                {user ? (
                   <button
-                    onClick={() => { setIsOpen(false); signOut({ callbackUrl: "/signin" }); }}
+                    onClick={() => { setIsOpen(false); signOut(); }}
                     className="w-full flex items-center gap-2 py-3 cyber-chamfer-sm border border-border font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground hover:border-destructive hover:text-destructive transition-all duration-150"
                   >
                     <LogOut className="w-3.5 h-3.5 ml-4" strokeWidth={1.5} />

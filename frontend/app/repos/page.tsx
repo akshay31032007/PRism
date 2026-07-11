@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useSession } from "next-auth/react";
+import { useSupabase } from "@/components/SessionProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   GitBranch, GitPullRequest, ChevronRight, RefreshCw,
@@ -129,7 +129,8 @@ function timeAgo(iso: string) {
 // ── Main page component ───────────────────────────────────────────────────────
 
 export default function ReposPage() {
-  const { data: session } = useSession();
+  const { session } = useSupabase();
+  const accessToken = session?.provider_token;
 
   const [view,          setView]          = useState<View>("repos");
   const [repos,         setRepos]         = useState<GHRepo[]>([]);
@@ -154,13 +155,13 @@ export default function ReposPage() {
 
   // ── Fetch repos on mount ──────────────────────────────────────────────────
   const fetchRepos = useCallback(async () => {
-    if (!session?.accessToken) return;
+    if (!accessToken) return;
     setLoadingRepos(true);
     setError(null);
     try {
       const res = await fetch(
         "https://api.github.com/user/repos?sort=updated&per_page=50&affiliation=owner,collaborator",
-        { headers: { Authorization: `Bearer ${session.accessToken}` } }
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       if (!res.ok) throw new Error(`GitHub API ${res.status}`);
       const data: GHRepo[] = await res.json();
@@ -170,7 +171,7 @@ export default function ReposPage() {
     } finally {
       setLoadingRepos(false);
     }
-  }, [session?.accessToken]);
+  }, [accessToken]);
 
   useEffect(() => { fetchRepos(); }, [fetchRepos]);
 
@@ -184,7 +185,7 @@ export default function ReposPage() {
     try {
       const res = await fetch(
         `https://api.github.com/repos/${repo.full_name}/pulls?state=open&per_page=30`,
-        { headers: { Authorization: `Bearer ${session?.accessToken}` } }
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       if (!res.ok) throw new Error(`GitHub API ${res.status}`);
       const data: GHPR[] = await res.json();
@@ -205,7 +206,7 @@ export default function ReposPage() {
     setAnalysis(null);
     setError(null);
     try {
-      const res = await fetch("/backend/api/analyze", {
+      const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pr_url: pr.html_url, enable_rag: false, skip_indexing: true }),
@@ -218,7 +219,7 @@ export default function ReposPage() {
       setAnalysis(result);
       // Save to localStorage history
       const { saveToHistory } = await import("@/lib/historyStore");
-      saveToHistory({
+      await saveToHistory({
         analysis_id:     result.analysis_id,
         pr_url:          pr.html_url,
         pr_title:        pr.title,
